@@ -1,12 +1,108 @@
-<!DOCTYPE html>
-<html lang="fa">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>شهر فومن</title>
-</head>
-<body>
-    <h1>به سایت شهر فومن خوش اودید✨🌼</h1>
-    <p>این صفحه ی اصلی سایته✨🌼</p>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}صفحه اصلی - شهر فومن{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <!-- ====== بخش مکان‌های دیدنی (درخت تاشو) ====== -->
+    <section class="section">
+        <h2 style="cursor: pointer;" onclick="toggleTree('sight-tree')">
+            🏛️ مکان‌های دیدنی
+        </h2>
+        <ul id="sight-tree" class="tree" style="display: none;">
+            {% for category in root_categories %}
+                {% if category.category_type == 'sight' %}
+                    <li>
+                        <strong>{{ category.name }}</strong>
+                        {% if category.children.all %}
+                            <ul>
+                                {% for child in category.children.all %}
+                                    <li>
+                                        <a href="{% url 'categories:category_posts' child.slug %}">
+                                            {{ child.name }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </section>
+
+    <!-- ====== بخش محلات (درخت تاشو) ====== -->
+    <section class="section">
+        <h2 style="cursor: pointer;" onclick="toggleTree('neighborhood-tree')">
+            🏘️ محلات
+        </h2>
+        <ul id="neighborhood-tree" class="tree" style="display: none;">
+            {% for neighborhood in neighborhoods %}
+                <li>
+                    <a href="{% url 'categories:category_posts' neighborhood.slug %}">
+                        {{ neighborhood.name }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <!-- ====== بخش روستاها (درخت تاشو) ====== -->
+    <section class="section">
+        <h2 style="cursor: pointer;" onclick="toggleTree('village-tree')">
+            🌾 روستاها
+        </h2>
+        <ul id="village-tree" class="tree" style="display: none;">
+            {% for village in villages %}
+                <li>
+                    <a href="{% url 'categories:category_posts' village.slug %}">
+                        {{ village.name }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <!-- ====== بخش خدمات شهری (کارت‌های مربعی) ====== -->
+    <section class="section">
+        <h2>🛠️ خدمات شهری</h2>
+        <div class="services-grid">
+            {% for service in services %}
+                <div class="service-card">
+                    <a href="{% url 'categories:category_posts' service.slug %}">
+                        <h3>{{ service.name }}</h3>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- ====== دکمه افزودن پست ====== -->
+    <section class="section">
+        {% if user.is_authenticated %}
+            <a href="#" class="btn-add-post" onclick="alert('به زودی اضافه میشه!')">
+                ➕ افزودن پست جدید
+            </a>
+        {% else %}
+            <p>برای افزودن پست، ابتدا <a href="{% url 'accounts:login' %}">وارد شوید</a>.</p>
+        {% endif %}
+    </section>
+
+</div>
+
+<!-- ====== جاوااسکریپت برای باز و بسته شدن درخت ====== -->
+<script>
+    function toggleTree(id) {
+        var element = document.getElementById(id);
+        if (element.style.display === "none") {
+            element.style.display = "block";
+        } else {
+            element.style.display = "none";
+        }
+    }
+</script>
+
+{% endblock %}
+

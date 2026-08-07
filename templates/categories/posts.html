@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ category.name }}{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <h1>{{ category.name }}</h1>
+
+    <!-- دکمه افزودن پست (فقط برای کاربران لاگین‌شده) -->
+    {% if user.is_authenticated %}
+        <a href="{% url 'posts:add_post' %}?category={{ category.id }}" class="btn-add-post">
+            ➕ افزودن پست جدید
+        </a>
+    {% else %}
+        <p>برای افزودن پست، ابتدا <a href="{% url 'accounts:login' %}">وارد شوید</a>.</p>
+    {% endif %}
+
+    <!-- لیست پست‌ها -->
+    <div class="posts-list">
+        {% for post in posts %}
+            <div class="post-card">
+                <h3>
+                    <a href="{% url 'posts:detail' post.id %}">
+                        {{ post.title|default:"پست بدون عنوان" }}
+                    </a>
+                </h3>
+                <p>{{ post.content|truncatewords:30 }}</p>
+                <small>
+                    {{ post.created_at|date:"Y/m/d" }} |
+                    ❤️ {{ post.likes_count }} |
+                    💬 {{ post.comments_count }}
+                </small>
+            </div>
+        {% empty %}
+            <p>هیچ پستی در این دسته‌بندی وجود ندارد.</p>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
