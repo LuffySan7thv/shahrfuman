@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}شهر فومن{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="{% url 'core:home' %}">خانه</a>
+            {% if user.is_authenticated %}
+                <span>خوش آمدی {{ user.username }}</span>
+                <a href="{% url 'accounts:logout' %}">خروج</a>
+            {% else %}
+                <a href="{% url 'accounts:login' %}">ورود</a>
+                <a href="{% url 'accounts:register' %}">ثبت‌نام</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

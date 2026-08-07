@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}ورود{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>ورود به سایت</h2>
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="نام کاربری" required>
+        <input type="password" name="password" placeholder="رمز عبور" required>
+        <button type="submit">ورود</button>
+    </form>
+    <p>ثبت‌نام نکردی؟ <a href="{% url 'accounts:register' %}">ثبت‌نام کن</a></p>
+</div>
+{% endblock %}
