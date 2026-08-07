@@ -87,3 +87,57 @@ class Media(models.Model):
         verbose_name_plural = "رسانه‌ها"
         ordering = ['order']
 
+class Comment(models.Model):
+    post = models.ForeignKey(
+        Post, 
+        on_delete=models.CASCADE, 
+        related_name='comments',
+        verbose_name="پست"
+    )
+    user = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE,
+        verbose_name="کاربر"
+    )
+    parent = models.ForeignKey(
+        'self', 
+        on_delete=models.CASCADE, 
+        null=True, 
+        blank=True, 
+        related_name='replies',
+        verbose_name="پاسخ به"
+    )
+    text = models.TextField(verbose_name="متن کامنت")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="تاریخ ایجاد")
+    likes_count = models.IntegerField(default=0, verbose_name="تعداد لایک")
+
+    def __str__(self):
+        return f"{self.user.username} - {self.text[:30]}"
+
+    class Meta:
+        verbose_name = "کامنت"
+        verbose_name_plural = "کامنت‌ها"
+        ordering = ['-created_at']
+
+class Like(models.Model):
+    user = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE,
+        verbose_name="کاربر"
+    )
+    post = models.ForeignKey(
+        Post, 
+        on_delete=models.CASCADE,
+        verbose_name="پست"
+    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="تاریخ ایجاد")
+
+    class Meta:
+        unique_together = ('user', 'post') # هر کاربر فقط یه بار می‌تونه یه پست رو لایک کنه
+        verbose_name = "لایک"
+        verbose_name_plural = "لایک‌ها"
+
+    def __str__(self):
+        return f"{self.user.username} - {self.post.id}"
+
+        

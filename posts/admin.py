@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post, Media
+from .models import Post, Media, Comment, Like
 
 class MediaInline(admin.TabularInline):
     model = Media
@@ -19,4 +19,13 @@ class MediaAdmin(admin.ModelAdmin):
     list_filter = ['media_type']
 
 
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'post', 'parent', 'created_at', 'likes_count']
+    list_filter = ['created_at']
+    search_fields = ['text']
 
+@admin.register(Like)
+class LikeAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'post', 'created_at']
+    list_filter = ['created_at']
